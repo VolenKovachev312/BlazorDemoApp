@@ -1,0 +1,62 @@
+﻿@using BlazorDemoApp.Data;
+@inject IJSRuntime jsRuntime;
+@if(displayContacts)
+{
+    @if (Contacts == null)
+    {
+        @LoadingContacts
+    }
+    else if (Contacts.Count() == 0)
+    {
+        @NoContacts
+    }
+    else
+    {
+        <input type="checkbox" @bind="displayEmail" />
+
+        <span>Display Email</span>
+        <br />
+        <MyTextBox placeholder="Search..." style="width:250px" disabled="disabled"></MyTextBox>
+        <br />
+        <br />
+        <MyTextBox @attributes="@(new Dictionary<string,object>{
+    {"placeholder","Placeholder"},
+    {"width","200px"}
+})"></MyTextBox>
+        <br />
+        @foreach (var contact in Contacts)
+        {
+            <ContactsComponent Contact="contact" DisplayEmail="displayEmail" DeleteCurrentContact="RequestConfirm"></ContactsComponent>
+        }
+    }
+}
+<DeleteConfirmPopUp @ref="deletePopUp" OnConfirmed="OnDeleteConfirmed"></DeleteConfirmPopUp>
+@code{
+    private bool displayEmail = true;
+    [Parameter]
+    public RenderFragment LoadingContacts { get; set; }
+    [Parameter]
+    public RenderFragment NoContacts { get; set; }
+    [Parameter]
+    public List<Contact> Contacts { get; set; }
+    private bool displayContacts = true;
+    private DeleteConfirmPopUp deletePopUp;
+    private async Task OnDeleteConfirmed(Contact contact)
+    {
+        Contacts.Remove(contact);
+        deletePopUp.Hide();
+    }
+    private async Task RequestConfirm(Contact contact)
+    {
+        //var result = await jsRuntime.InvokeAsync<bool>("confirm",$"Are you sure you want to delete {contact.FirstName} {contact.LastName} from your contact list?");
+        //if(result)
+        //{
+        //    Contacts.Remove(contact);
+        //}
+        deletePopUp.BodyContent = $"Do you want to delete {contact.FirstName} {contact.LastName}?";
+        deletePopUp.ContactToDelete = contact;
+        deletePopUp.Show();
+    }
+    public void ShowContacts() => displayContacts = true;
+    public void HideContacts() => displayContacts = false;
+}

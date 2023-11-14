@@ -1,0 +1,14 @@
+﻿@page "/"
+@using Data;
+@using BlazorDemoApp.Pages.Components;
+<PageTitle>Index</PageTitle>
+<ContactList @ref="contactList" Contacts="contacts">
+    <LoadingContacts>
+        <br /><p>Loading contacts...</p><br />
+    </LoadingContacts>
+    <NoContacts>
+        <br /><p>No contacts...</p><br />
+    </NoContacts>
+</ContactList>
+<DeleteConfirmPopUp></DeleteConfirmPopUp>
+<button @onclick="HideContacts">Show/Hide Contacts</button>

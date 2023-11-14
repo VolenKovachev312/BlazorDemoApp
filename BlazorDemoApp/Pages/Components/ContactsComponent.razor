@@ -1,0 +1,29 @@
+﻿@using BlazorDemoApp.Data;
+<p>
+    <b>Name: </b><span>@Contact.FirstName @Contact.LastName</span><br />
+    @if(DisplayEmail)
+    {
+        <b>Email: </b><i>@Contact.Email</i><br />
+    }
+    @if(displayInfo)
+    {
+        <p>The Email of @Contact.FirstName @Contact.LastName is @Contact.Email</p>
+    }
+    <br />
+    <button class="btn btn-primary" onclick="@(()=>{displayInfo=!displayInfo;})">Display Info</button>
+    <button onclick="@(()=>DeleteCurrentContact.InvokeAsync(Contact))">Delete Contact</button>
+</p>
+
+@code{
+    [Parameter]
+    public Contact Contact{ get; set; }
+
+    [Parameter]
+    public bool DisplayEmail { get; set; }
+    [Parameter]
+    public EventCallback<Contact> DeleteCurrentContact { get; set; }
+
+    private bool displayInfo = false;
+
+
+}

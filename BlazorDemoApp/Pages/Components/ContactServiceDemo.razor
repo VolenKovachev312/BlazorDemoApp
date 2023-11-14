@@ -1,0 +1,64 @@
+﻿@page "/contacts"
+@using BlazorDemoApp.Contracts;
+@using BlazorDemoApp.Data;
+@using BlazorDemoApp.Pages.Components.DialogPopUp;
+@inject IContactService contactService;
+<div class="contact-input-form">
+    <input @bind="firstName" /><br />
+    <input @bind="lastName" /><br />
+    <input @bind="email" /><br />
+    <button class="btn btn-outline-primary" @onclick="AddContact">Add Contact</button>
+</div>
+@*<Dialog @ref="@dialog" class="p-0 border rounded shadow">
+    <DialogLayout>
+        <Header>
+            Error!
+        </Header>
+        <Content>
+            Please fill out all input fields!
+        </Content>
+    </DialogLayout>
+</Dialog>*@
+@if (contactService.GetContacts().Count() == 0)
+{
+    <p>No Contacts.</p>
+}
+else
+{
+    foreach (var contact in contactService.GetContacts())
+    {
+        <p>
+            <b>Name: </b>@contact.FirstName @contact.LastName<br>
+            <b>Email: </b><i>@contact.Email</i>
+        </p>
+        <hr />
+    }
+}
+@code {
+    private string firstName;
+    private string lastName;
+    private string email;
+    private Dialog dialog;
+    private async Task OpenDialog() => await dialog.ShowDialogAsync();
+    private async Task AddContact()
+    {
+        //if ((firstName is null || firstName.Length == 0) || 
+        //(lastName is null || lastName.Length == 0) ||
+        //(email is null || email.Length == 0))
+        //{
+        //    await OpenDialog();
+        //}
+        //else
+        //{
+            var contact = new Contact
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email
+                };
+            contactService.AddContact(contact);
+
+        //}
+
+    }
+}
